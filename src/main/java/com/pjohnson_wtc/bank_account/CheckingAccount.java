@@ -6,6 +6,6 @@ public class CheckingAccount extends Account {
 
 	public CheckingAccount(String name, long socialSecurityNumber, BigDecimal balance) {
 		super(name, socialSecurityNumber, balance);
-		this.accountNumber = 2;
+		this.accountNumber = generateAccountNumber("2", socialSecurityNumber);
 	}
 }

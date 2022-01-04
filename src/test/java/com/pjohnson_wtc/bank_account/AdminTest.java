@@ -31,15 +31,18 @@ public class AdminTest {
 	}
 	@Test
 	public void testCreateAccount_addsBothCheckingAndSavings() {
-		admin.createAccount("NewBankAccounts.csv");
-		assertEquals(1, admin.getAccounts().get(0).getAccountNumber());
-		assertEquals(2, admin.getAccounts().get(1).getAccountNumber());
+		assertEquals(1, (long)(admin.createAccount("NewBankAccounts.csv").get(0) / 10000000000L));
+		assertEquals(2, (long)(admin.createAccount("NewBankAccounts.csv").get(1) / 10000000000L));
 	}
 	@Test
 	public void testCreateAccount_passesCsvDataToConstructors() {
 		admin.createAccount("NewBankAccounts.csv");
 		assertEquals("Arielle Duncan", admin.getAccounts().get(0).getName());
 		assertEquals(new BigDecimal(1500), admin.getAccounts().get(4).getBalance());
+	}
+	@Test
+	public void testCreateAccount_acctNoIncludesSSNDigits() {
+		assertEquals(145, (long)(admin.createAccount("NewBankAccounts.csv").get(4) / 100000000));
 	}
 
 }
