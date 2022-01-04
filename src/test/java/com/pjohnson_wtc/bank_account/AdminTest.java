@@ -50,5 +50,16 @@ public class AdminTest {
 		assertEquals(0.6225, admin.getAccounts().get(1).getInterestRate());
 		assertEquals(3.1125, admin.getAccounts().get(0).getInterestRate());
 	}
-
+	@Test
+	public void testCreateAccount_createsAccessCode_Savings() {
+		admin.createAccount("NewBankAccounts.csv");
+		SavingsAccount sa = (SavingsAccount)admin.getAccounts().get(0);
+		assertTrue((sa.getDepositBox().getAccessCode() > 99) && (sa.getDepositBox().getAccessCode() < 1000));
+	}
+	@Test
+	public void testCreateAccount_createsAccessCode_Checking() {
+		admin.createAccount("NewBankAccounts.csv");
+		CheckingAccount ca = (CheckingAccount)admin.getAccounts().get(1);
+		assertTrue((ca.getDebitCard().getAccessCode() > 99) && (ca.getDebitCard().getAccessCode() < 1000));
+	}
 }
