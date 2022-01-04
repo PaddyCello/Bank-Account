@@ -10,6 +10,7 @@ public class Account {
 	long accountNumber;
 	BigDecimal balance;
 	static int uniqueAccountNumBit = 10000;
+	BigDecimal interestRate;
 	
 	public Account(String name, long socialSecurityNumber, BigDecimal balance) {
 		this.name = name;
@@ -32,5 +33,9 @@ public class Account {
 	
 	public BigDecimal getBalance() {
 		return balance;
+	}
+	
+	public BigDecimal getInterestRate() {
+		return interestRate;
 	}
 }

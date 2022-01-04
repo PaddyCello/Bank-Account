@@ -44,5 +44,11 @@ public class AdminTest {
 	public void testCreateAccount_acctNoIncludesSSNDigits() {
 		assertEquals(145, (long)(admin.createAccount("NewBankAccounts.csv").get(4) / 100000000));
 	}
+	@Test
+	public void testCreateAccount_interestRatesSetForAccounts() {
+		admin.createAccount("NewBankAccounts.csv");
+		assertEquals(0.6225, admin.getAccounts().get(1).getInterestRate());
+		assertEquals(3.1125, admin.getAccounts().get(0).getInterestRate());
+	}
 
 }
