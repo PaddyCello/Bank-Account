@@ -1,21 +1,34 @@
 package com.pjohnson_wtc.bank_account;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Admin {
 	
+	private List<Account> accounts = null;
+	
 	public List<List<String>> createAccount() {
 		
-		return readFromCsv(this.getClass().getClassLoader().getResourceAsStream("NewBankAccounts.csv"));
+		List<List<String>> accountApplicants = readFromCsv(this.getClass().getClassLoader().getResourceAsStream("NewBankAccounts.csv"));
+		
+		accounts = new ArrayList<Account>();
+		
+		for (List<String> applicant : accountApplicants) {
+			if (applicant.get(2).equals("Savings")) {
+				Account newAccount = new SavingsAccount();
+				accounts.add(newAccount);
+			} else {
+				Account newAccount = new CheckingAccount();
+				accounts.add(newAccount);
+			}
+		}
+		
+		return accountApplicants;
 	}
 	
 	private List<List<String>> readFromCsv(InputStream filepath) {
@@ -32,9 +45,12 @@ public class Admin {
 			return null;
 		}
 	}
+	
+	public List<Account> getAccounts() {
+		return accounts;
+	}
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
 	}
 
