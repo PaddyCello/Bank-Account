@@ -3,6 +3,7 @@ package com.pjohnson_wtc.bank_account;
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
@@ -47,8 +48,8 @@ public class AdminTest {
 	@Test
 	public void testCreateAccount_interestRatesSetForAccounts() {
 		admin.createAccount("NewBankAccounts.csv");
-		assertEquals(0.6225, admin.getAccounts().get(1).getInterestRate());
-		assertEquals(3.1125, admin.getAccounts().get(0).getInterestRate());
+		assertEquals(new BigDecimal(0.6225).setScale(4, RoundingMode.FLOOR), admin.getAccounts().get(1).getInterestRate().setScale(4, RoundingMode.FLOOR));
+		assertEquals(new BigDecimal(3.1125).setScale(4, RoundingMode.CEILING), admin.getAccounts().get(0).getInterestRate().setScale(4, RoundingMode.FLOOR));
 	}
 	@Test
 	public void testCreateAccount_createsAccessCode_Savings() {
