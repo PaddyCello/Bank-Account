@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
