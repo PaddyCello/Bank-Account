@@ -91,4 +91,9 @@ public class AdminTest {
 		admin.createAccountsFromCsv("NewBankAccounts.csv");
 		assertNull(admin.showInfo(30025643212L, 123));
 	}
+	@Test
+	public void testShowInfo_wrongAccessCode() {
+		admin.createAccountsFromCsv("NewBankAccounts.csv");
+		assertNull(admin.showInfo(admin.getAccounts().get(0).getAccountNumber(), 123));
+	}
 }

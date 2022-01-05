@@ -50,32 +50,15 @@ public class Admin {
 		return accountNums;
 	}
 	
+	//WTCET-36 - NEW until 62
+	//Method for showing info from a given account number and access code
 	public String showInfo(long accountNumber, int accessCode) {
 		
-		String returnData = null;
-		Account accountToFind = null;
-		for (Account account: accounts) {
-			if (account.getAccountNumber() == accountNumber) {
-				accountToFind = account;
-				break;
-			}
-		}
+		//Create a new Account object to hold the result of searching for the account that goes with the account number provided
+		Account accountToFind = findAccountByNumber(accountNumber);
 		
-		if (accountToFind == null) return null;
-		if (accountToFind.getAccountNumber() < 20000000000L) {
-			SavingsAccount savings = (SavingsAccount)accountToFind;
-			
-			if (savings.getDepositBox().getAccessCode() == accessCode) {
-				returnData = savings.toString();
-			} 
-		} else {
-			CheckingAccount checking = (CheckingAccount)accountToFind;
-			
-			if (checking.getDebitCard().getAccessCode() == accessCode) {
-				returnData = checking.toString();
-			}
-		}
-		return returnData;
+		//Return early if no account found, otherwise return the results of checking to see if the access code is valid
+		return (accountToFind == null) ? null : checkAccessCode(accountToFind, accessCode);	
 	}
 	
 	//Method for reading data from csv file
@@ -164,6 +147,65 @@ public class Admin {
 		//Create new SavingsAccount or CheckingAccount depending on type specified in csv
 		return (applicant.get(2).equals("Savings")) ? new SavingsAccount(name, socialSecurityNumber, balance, "1") : 
 													new CheckingAccount(name, socialSecurityNumber, balance, "2");
+	}
+	
+	//WTCET-36 - NEW until 209
+	//Method for finding account with account number provided
+	private Account findAccountByNumber(long accountNumber) {
+		
+		//Return null if account number is out of bounds
+		if (accountNumber < 10000000000L || accountNumber > 29999999999L) {
+			
+			logger.log(Level.WARNING, "Invalid account number");
+			return null;
+		}
+		
+		//Initialize a new Account object to null
+		Account accountToFind = null;
+		
+		//Loop through the accounts ArrayList checking for a match; if one is found, assign accountToFind to it and break the loop
+		for (Account account: accounts) {
+			
+			if (account.getAccountNumber() == accountNumber) {
+				accountToFind = account;
+				break;
+			}
+		}
+		
+		if (accountToFind == null) logger.log(Level.WARNING, "Account does not exist");
+		
+		//Return result - either an account or null
+		return accountToFind;
+	}
+	
+	//Method for checking if access code is valid for the account found
+	private String checkAccessCode(Account accountToFind, int accessCode) {
+		
+		//Initialize a String to null
+		String returnData = null;
+		
+		//If account number starts with 1, our account will be a savings account
+		if (accountToFind.getAccountNumber() < 20000000000L) {
+			SavingsAccount savings = (SavingsAccount)accountToFind;
+			
+			//If the access code is valid, assign our string to the data that would be returned by showInfo
+			if (savings.getDepositBox().getAccessCode() == accessCode) {
+				returnData = savings.toString();
+			} 
+			
+			//If account number starts with 2, our account will be a checking account
+		} else {
+			CheckingAccount checking = (CheckingAccount)accountToFind;
+			
+			if (checking.getDebitCard().getAccessCode() == accessCode) {
+				returnData = checking.toString();
+			}
+		}
+		
+		if (returnData == null) logger.log(Level.WARNING, "Invalid access code");
+		
+		//Return the value of the String - either info on a savings or checking account, or null
+		return returnData;
 	}
 	
 	//Necessary getters
