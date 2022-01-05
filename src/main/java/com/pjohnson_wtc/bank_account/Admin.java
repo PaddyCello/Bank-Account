@@ -84,37 +84,45 @@ public class Admin {
 	//Method for validating input from csv
 	private boolean validateApplicant(List<String> applicant) {
 		
-		//Return false if account type is neither Savings nor Checking
-		if (!(applicant.get(2).equals("Savings") || applicant.get(2).equals("Checking"))) {
-			
-			logger.log(Level.WARNING, "Valid account type required in column 3");
-			return false;
-		}
-		
-		//Return false if parsing numeric values from SSN or balance throws an Exception
 		try {
-			Long.parseLong(applicant.get(1));
-			Double.parseDouble(applicant.get(3));
+			//Return false if account type is neither Savings nor Checking
+			if (!(applicant.get(2).equals("Savings") || applicant.get(2).equals("Checking"))) {
 			
-		} catch (NumberFormatException nfe) {
-			logger.log(Level.WARNING, "Columns 2 and 4 must both be numbers", nfe.toString());
+				logger.log(Level.WARNING, "Valid account type required in column 3");
+				return false;
+			}
+		
+			//Return false if parsing numeric values from SSN or balance throws an Exception
+			try {
+				Long.parseLong(applicant.get(1));
+				Double.parseDouble(applicant.get(3));
+			
+			} catch (NumberFormatException nfe) {
+				logger.log(Level.WARNING, "Columns 2 and 4 must both be numbers", nfe.toString());
+				return false;
+			}
+		
+			//Return false if SSN is too short to provide digits for account number
+			if (Long.parseLong(applicant.get(1)) < 10) {
+				logger.log(Level.WARNING, "Invalid social security number");
+				return false;
+			}
+		
+			//Return false if opening balance is less than or equal to zero
+			if (Double.parseDouble(applicant.get(3)) <= 0) {
+				logger.log(Level.WARNING, "Cannot open an account without funds");
+				return false;
+			}
+		
+			//If all is good, return true
+			return true;
+		
+		//Handle exception if any of the fields are null, and return false
+		} catch (NullPointerException npe) {
+			
+			logger.log(Level.WARNING, "Cannot have empty fields", npe.toString());
 			return false;
 		}
-		
-		//Return false if SSN is too short to provide digits for account number
-		if (Long.parseLong(applicant.get(1)) < 10) {
-			logger.log(Level.WARNING, "Invalid social security number");
-			return false;
-		}
-		
-		//Return false if opening balance is less than or equal to zero
-		if (Double.parseDouble(applicant.get(3)) <= 0) {
-			logger.log(Level.WARNING, "Cannot open an account without funds");
-			return false;
-		}
-		
-		//If all is good, return true
-		return true;
 	}
 	
 	//Method for creating a single account
