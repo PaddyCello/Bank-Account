@@ -50,6 +50,32 @@ public class Admin {
 		return accountNums;
 	}
 	
+	public String showInfo(long accountNumber, int accessCode) {
+		
+		String returnData = null;
+		Account accountToFind = null;
+		for (Account account: accounts) {
+			if (account.getAccountNumber() == accountNumber) {
+				accountToFind = account;
+				break;
+			}
+		}
+		if (accountToFind.getAccountNumber() < 200000000000L) {
+			SavingsAccount savings = (SavingsAccount)accountToFind;
+			
+			if (savings.getDepositBox().getAccessCode() == accessCode) {
+				returnData = savings.toString();
+			} 
+		} else {
+			CheckingAccount checking = (CheckingAccount)accountToFind;
+			
+			if (checking.getDebitCard().getAccessCode() == accessCode) {
+				returnData = checking.toString();
+			}
+		}
+		return returnData;
+	}
+	
 	//Method for reading data from csv file
 	private List<List<String>> readFromCsv(InputStream filepath) {
 		

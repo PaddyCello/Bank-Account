@@ -74,4 +74,10 @@ public class AdminTest {
 		CheckingAccount ca = (CheckingAccount)admin.getAccounts().get(1);
 		assertTrue((ca.getDebitCard().getIdNumber() > 99999999999L) && (ca.getDebitCard().getIdNumber() < 1000000000000L));
 	}
+	@Test
+	public void testShowInfo() {
+		admin.createAccountsFromCsv("NewBankAccounts.csv");
+		SavingsAccount sa = (SavingsAccount)admin.getAccounts().get(0);
+		assertEquals("Name: Arielle Duncan, Account Number: " + sa.getAccountNumber() + ", Savings Account, Balance: 1000", admin.showInfo(sa.getAccountNumber(), sa.getDepositBox().getAccessCode()));
+	}
 }

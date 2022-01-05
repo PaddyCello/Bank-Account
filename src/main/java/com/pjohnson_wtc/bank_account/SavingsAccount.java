@@ -20,6 +20,11 @@ public class SavingsAccount extends Account implements Interest {
 		return baseInterestRate.subtract(baseInterestRate.multiply(new BigDecimal(0.25)));
 	}
 	
+	//toString - not inherited from Account as info specific to account type
+	public String toString() {
+		return "Name: " + name + ", Account Number: " + accountNumber + ", Savings Account, Balance: " + balance;
+	}
+	
 	//Necessary getters
 	public BankingTool getDepositBox() {
 		return depositBox;
