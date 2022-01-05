@@ -22,7 +22,7 @@ public class SavingsAccount extends Account implements Interest {
 	
 	//toString - not inherited from Account as info specific to account type
 	public String toString() {
-		return "Name: " + name + ", Account Number: " + accountNumber + ", Savings Account, Balance: " + balance;
+		return "Name: " + name + ", Savings Account Number: " + accountNumber + ", Deposit Box Number: " + depositBox.getIdNumber() + ", Balance: " + balance;
 	}
 	
 	//Necessary getters

@@ -60,7 +60,7 @@ public class Admin {
 				break;
 			}
 		}
-		if (accountToFind.getAccountNumber() < 200000000000L) {
+		if (accountToFind.getAccountNumber() < 20000000000L) {
 			SavingsAccount savings = (SavingsAccount)accountToFind;
 			
 			if (savings.getDepositBox().getAccessCode() == accessCode) {
