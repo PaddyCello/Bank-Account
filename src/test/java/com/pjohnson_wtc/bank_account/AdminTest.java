@@ -86,4 +86,9 @@ public class AdminTest {
 		CheckingAccount ca = (CheckingAccount)admin.getAccounts().get(1);
 		assertEquals("Name: Marybeth Sanders, Checking Account Number: " + ca.getAccountNumber() + ", Debit Card Number: " + ca.getDebitCard().getIdNumber() + ", Balance: 2500", admin.showInfo(ca.getAccountNumber(), ca.getDebitCard().getAccessCode()));
 	}
+	@Test
+	public void testShowInfo_wrongAccountNumber() {
+		admin.createAccountsFromCsv("NewBankAccounts.csv");
+		assertNull(admin.showInfo(30025643212L, 123));
+	}
 }

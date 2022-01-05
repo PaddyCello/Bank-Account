@@ -60,6 +60,8 @@ public class Admin {
 				break;
 			}
 		}
+		
+		if (accountToFind == null) return null;
 		if (accountToFind.getAccountNumber() < 20000000000L) {
 			SavingsAccount savings = (SavingsAccount)accountToFind;
 			
