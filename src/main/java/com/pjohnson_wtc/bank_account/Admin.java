@@ -19,7 +19,7 @@ public class Admin {
 	private List<Account> accounts = null;
 	
 	//Method for creating accounts from csv file
-	public List<Long> createAccount(String filename) {
+	public List<Long> createAccountsFromCsv(String filename) {
 		
 		//Call readFromCsv() to read csv file and format into List of Lists
 		List<List<String>> accountApplicants = readFromCsv(this.getClass().getClassLoader().getResourceAsStream(filename));
@@ -37,7 +37,7 @@ public class Admin {
 			if (!validateApplicant(applicant)) continue;
 
 			//Declare local variable for saving new Account objects
-			Account newAccount = finallyCreateAccount(applicant);
+			Account newAccount = createAccount(applicant);
 			
 			//Add new Account to Admin.accounts and account number list
 			accounts.add(newAccount);
@@ -126,7 +126,7 @@ public class Admin {
 	}
 	
 	//Method for creating a single account
-	private Account finallyCreateAccount(List<String> applicant) {
+	private Account createAccount(List<String> applicant) {
 		
 		//Save name, SSN and starting balance to local variables, parsing to correct data types as needed
 		String name = applicant.get(0);
