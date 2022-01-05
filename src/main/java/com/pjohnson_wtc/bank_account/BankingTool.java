@@ -4,18 +4,27 @@ import java.util.Random;
 
 public class BankingTool {
 	
-	long idNumber;
-	int accessCode;
+	private long idNumber;
+	private int accessCode;
 	
-	public BankingTool() {
-		accessCode = generateAccessCode();
+	public BankingTool(long min, long max) {
+		this.idNumber = generateIdNumber(min, max);
+		this.accessCode = generateAccessCode();
 	}
 	
-	int generateAccessCode() {
-		return new Random().nextInt(999-100) + 100;
+	private int generateAccessCode() {
+		return new Random().nextInt(9999 - 1000) + 1000;
 	}
 	
-	int getAccessCode() {
+	private long generateIdNumber(long min, long max) {
+		return (long)(Math.random() * (max - min)) + min;
+	}
+	
+	public long getIdNumber() {
+		return idNumber;
+	}
+	
+	public int getAccessCode() {
 		return accessCode;
 	}
 }

@@ -55,12 +55,24 @@ public class AdminTest {
 	public void testCreateAccount_createsAccessCode_Savings() {
 		admin.createAccount("NewBankAccounts.csv");
 		SavingsAccount sa = (SavingsAccount)admin.getAccounts().get(0);
-		assertTrue((sa.getDepositBox().getAccessCode() > 99) && (sa.getDepositBox().getAccessCode() < 1000));
+		assertTrue((sa.getDepositBox().getAccessCode() > 999) && (sa.getDepositBox().getAccessCode() < 10000));
 	}
 	@Test
 	public void testCreateAccount_createsAccessCode_Checking() {
 		admin.createAccount("NewBankAccounts.csv");
 		CheckingAccount ca = (CheckingAccount)admin.getAccounts().get(1);
-		assertTrue((ca.getDebitCard().getAccessCode() > 99) && (ca.getDebitCard().getAccessCode() < 1000));
+		assertTrue((ca.getDebitCard().getAccessCode() > 999) && (ca.getDebitCard().getAccessCode() < 10000));
+	}
+	@Test
+	public void testCreateAccount_createsIDNum_Savings() {
+		admin.createAccount("NewBankAccounts.csv");
+		SavingsAccount sa = (SavingsAccount)admin.getAccounts().get(0);
+		assertTrue((sa.getDepositBox().getIdNumber() > 99) && (sa.getDepositBox().getIdNumber() < 1000));
+	}
+	@Test
+	public void testCreateAccount_createsIDNum_Checking() {
+		admin.createAccount("NewBankAccounts.csv");
+		CheckingAccount ca = (CheckingAccount)admin.getAccounts().get(1);
+		assertTrue((ca.getDebitCard().getIdNumber() > 99999999999L) && (ca.getDebitCard().getIdNumber() < 1000000000000L));
 	}
 }

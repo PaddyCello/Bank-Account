@@ -12,7 +12,7 @@ public class SavingsAccount extends Account implements Interest {
 		super(name, socialSecurityNumber, balance);
 		this.accountNumber = generateAccountNumber("1", socialSecurityNumber);
 		this.interestRate = generateInterestRate();
-		this.depositBox = new BankingTool();
+		this.depositBox = new BankingTool(100, 999);
 	}
 	
 	public BigDecimal generateInterestRate() {

@@ -12,7 +12,7 @@ public class CheckingAccount extends Account implements Interest {
 		super(name, socialSecurityNumber, balance);
 		this.accountNumber = generateAccountNumber("2", socialSecurityNumber);
 		this.interestRate = generateInterestRate();
-		this.debitCard = new BankingTool();
+		this.debitCard = new BankingTool(100000000000L, 999999999999L);
 	}
 	
 	public BigDecimal generateInterestRate() {
