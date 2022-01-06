@@ -61,12 +61,14 @@ public class Admin {
 		return (accountToFind == null) ? null : checkAccessCode(accountToFind, accessCode);	
 	}
 	
-	//WTCET-37 - NEW
-	//Method for depositing an amount of money into an account
+	//WTCET-37 - NEW until 73
+	//Method for depositing an amount of money into an account - takes a double instead of a BigDecimal to minimize risk of NumberFormatException
 	public BigDecimal depositIntoAccount(long accountNumber, double amount) {
 		
+		//Create a new Account object to hold the result of searching for the account that goes with the account number provided
 		Account accountToFind = findAccountByNumber(accountNumber);
 		
+		//Return early if no account found, otherwise return the results of checking to see if the amount can be deposited
 		return (accountToFind == null) ? null : accountToFind.deposit(amount);
 	}
 	

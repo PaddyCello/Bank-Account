@@ -30,21 +30,29 @@ public class Account {
 		return Long.parseLong(accountType + (socialSecurityNumber % 100) + uniqueAccountNumBit++ + randomBit);
 	}
 	
-	//WTCET-37 - NEW
+	//WTCET-37 - NEW until 53
+	//Method for depositing money into account
 	public BigDecimal deposit(double amount) {
 		
+		//Return early if deposit amount is less than or equal to zero
 		if (amount <= 0) {
 			logger.log(Level.WARNING, "You must deposit a positive amount");
 			return balance;
 		}
+		
+		//Otherwise, set balance to existing value plus deposit amount, truncated to two decimal places, and return
 		setBalance(balance.add(new BigDecimal(Math.floor(amount * 100) / 100)));
+		
+		logger.log(Level.INFO, "Deposit successful");
 		return balance;
 	}
 	
+	//Necessary setters
 	public void setBalance(BigDecimal balance) {
 		this.balance = balance;
 	}
 	
+	//Necessary getters
 	public String getName() {
 		return name;
 	}
