@@ -51,7 +51,7 @@ public class Account {
 		if (!validAmount(amount)) return balance;
 		if (!sufficientFunds(amount)) return balance;
 		
-		setBalance(balance.subtract(new BigDecimal(amount)));
+		setBalance(balance.subtract(new BigDecimal(Math.floor(amount * 100) / 100)));
 		return balance;
 	}
 	
