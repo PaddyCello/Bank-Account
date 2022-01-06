@@ -96,4 +96,10 @@ public class AdminTest {
 		admin.createAccountsFromCsv("NewBankAccounts.csv");
 		assertNull(admin.showInfo(admin.getAccounts().get(0).getAccountNumber(), 123));
 	}
+	@Test
+	public void testDepositIntoAccount() {
+		admin.createAccountsFromCsv("NewBankAccounts.csv");
+		admin.depositIntoAccount(admin.getAccounts().get(0).getAccountNumber(), new BigDecimal(200));
+		assertEquals(new BigDecimal(1200), admin.getAccounts().get(0).getBalance());
+	}
 }

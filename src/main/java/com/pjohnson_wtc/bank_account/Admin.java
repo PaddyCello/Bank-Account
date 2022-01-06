@@ -61,6 +61,15 @@ public class Admin {
 		return (accountToFind == null) ? null : checkAccessCode(accountToFind, accessCode);	
 	}
 	
+	//WTCET-37 - NEW
+	//Method for depositing an amount of money into an account
+	public BigDecimal depositIntoAccount(long accountNumber, BigDecimal amount) {
+		
+		Account accountToFind = findAccountByNumber(accountNumber);
+		
+		return (accountToFind == null) ? null : accountToFind.deposit(amount);
+	}
+	
 	//Method for reading data from csv file
 	private List<List<String>> readFromCsv(InputStream filepath) {
 		

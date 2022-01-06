@@ -25,6 +25,16 @@ public class Account {
 		return Long.parseLong(accountType + (socialSecurityNumber % 100) + uniqueAccountNumBit++ + randomBit);
 	}
 	
+	//WTCET-37 - NEW
+	public BigDecimal deposit(BigDecimal amount) {
+		setBalance(balance.add(amount));
+		return balance;
+	}
+	
+	public void setBalance(BigDecimal balance) {
+		this.balance = balance;
+	}
+	
 	public String getName() {
 		return name;
 	}
