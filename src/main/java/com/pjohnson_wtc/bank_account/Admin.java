@@ -50,7 +50,7 @@ public class Admin {
 		return accountNums;
 	}
 	
-	//WTCET-36 - NEW until 62
+	//WTCET-38 - REFACTORED until 63
 	//Method for showing info from a given account number and access code
 	public String showInfo(long accountNumber, int accessCode) {
 		
@@ -73,18 +73,23 @@ public class Admin {
 		return (accountToFind == null) ? null : accountToFind.deposit(amount);
 	}
 	
-	//WTCET-38 - NEW
+	//WTCET-38 - NEW until 94
 	//Method for withdrawing an amount of money from an account
 	public BigDecimal withdrawFromAccount(long accountNumber, long idNumber, int accessCode, double amount) {
 		
 		//Create a new Account object to hold the result of searching for the account that goes with the account number provided
 		Account accountToFind = findAccountByNumber(accountNumber);
 		
+		//Return early if access code is not valid
 		if (checkAccessCode(accountToFind, accessCode) == null) return null;
+		
+		//Return early if deposit box number / debit card number is not valid
 		if (!checkIdNumber(accountToFind, idNumber)) {
 			logger.log(Level.WARNING, "Invalid ID number");
 			return null; 
 		}
+		
+		//Otherwise, return outcome of attempt to withdraw funds
 		return accountToFind.withdraw(amount);
 	}
 	
@@ -205,6 +210,7 @@ public class Admin {
 		return accountToFind;
 	}
 	
+	//WTCET-38 - REFACTORED until 242
 	//Method for checking if access code is valid for the account found
 	private Account checkAccessCode(Account accountToFind, int accessCode) {
 		
@@ -235,31 +241,33 @@ public class Admin {
 		return returnData;
 	}
 	
-	//WTCET-38 - NEW
+	//WTCET-38 - NEW until 271
+	//Method for checking if deposit box number / debit card number is valid
 	private boolean checkIdNumber(Account accountToFind, long idNumber) {
+		
 		//Initialize a boolean to false
 		boolean isValid = false;
 				
-			//If account number starts with 1, our account will be a savings account
-			if (accountToFind.getAccountNumber() < 20000000000L) {
-				SavingsAccount savings = (SavingsAccount)accountToFind;
+		//If account number starts with 1, our account will be a savings account
+		if (accountToFind.getAccountNumber() < 20000000000L) {
+			SavingsAccount savings = (SavingsAccount)accountToFind;
 					
-				//If the access code is valid, set isValid to true
-				if (savings.getDepositBox().getIdNumber() == idNumber) {
-					isValid = true;
-				} 
+			//If the access code is valid, set isValid to true
+			if (savings.getDepositBox().getIdNumber() == idNumber) {
+				isValid = true;
+			} 
 					
-				//If account number starts with 2, our account will be a checking account
-			} else {
-				CheckingAccount checking = (CheckingAccount)accountToFind;
+			//If account number starts with 2, our account will be a checking account
+		} else {
+			CheckingAccount checking = (CheckingAccount)accountToFind;
 					
-				if (checking.getDebitCard().getIdNumber() == idNumber) {
-					isValid = true;
-				}
+			if (checking.getDebitCard().getIdNumber() == idNumber) {
+				isValid = true;
 			}
+		}
 				
-			//Return the value of the boolean
-			return isValid;
+		//Return the value of the boolean
+		return isValid;
 	}
 	
 	//Necessary getters

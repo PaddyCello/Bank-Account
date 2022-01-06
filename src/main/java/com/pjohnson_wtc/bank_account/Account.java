@@ -30,7 +30,7 @@ public class Account {
 		return Long.parseLong(accountType + (socialSecurityNumber % 100) + uniqueAccountNumBit++ + randomBit);
 	}
 	
-	//WTCET-37 - NEW until 53
+	//WTCET-38 - REFACTORED until 45
 	//Method for depositing money into account
 	public BigDecimal deposit(double amount) {
 		
@@ -44,17 +44,24 @@ public class Account {
 		return balance;
 	}
 	
-	//WTCET-38 - NEW
+	//WTCET-38 - NEW until 88
+	//Method for withdrawing money from an account
 	public BigDecimal withdraw(double amount) {
 		
 		//Return early if validation check for amount fails
 		if (!validAmount(amount)) return balance;
+		
+		//Return early if the account does not hold sufficient funds for withdrawal
 		if (!sufficientFunds(amount)) return balance;
 		
+		//Otherwise, subtract withdrawal amount (truncated to two decimal places) and return new balance
 		setBalance(balance.subtract(new BigDecimal(Math.floor(amount * 100) / 100)));
+		
+		logger.log(Level.INFO, "Withdrawal successful");
 		return balance;
 	}
 	
+	//Method for checking amount for withdrawal or deposit is positive
 	boolean validAmount(double amount) {
 		
 		//Return false if deposit amount is less than or equal to zero
@@ -62,14 +69,21 @@ public class Account {
 			logger.log(Level.WARNING, "You must provide a positive amount");
 			return false;
 		}
+		
+		//Otherwise, return true
 		return true;
 	}
 	
+	//Method for checking that account has sufficient funds to cover withdrawal
 	boolean sufficientFunds(double amount) {
+		
+		//Return false if amount to be withdrawn is greater than balance of account
 		if (balance.compareTo(new BigDecimal(amount)) < 0) {
 			logger.log(Level.WARNING, "Insufficient funds");
 			return false;
 		}
+		
+		//Otherwise, return true
 		return true;
 	}
 	
