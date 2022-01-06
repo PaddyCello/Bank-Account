@@ -47,6 +47,12 @@ public class Account {
 		return balance;
 	}
 	
+	//WTCET-38 - NEW
+	public BigDecimal withdraw(double amount) {
+		setBalance(balance.subtract(new BigDecimal(amount)));
+		return balance;
+	}
+	
 	//Necessary setters
 	public void setBalance(BigDecimal balance) {
 		this.balance = balance;

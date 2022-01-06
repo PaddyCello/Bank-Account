@@ -58,7 +58,8 @@ public class Admin {
 		Account accountToFind = findAccountByNumber(accountNumber);
 		
 		//Return early if no account found, otherwise return the results of checking to see if the access code is valid
-		return (accountToFind == null) ? null : checkAccessCode(accountToFind, accessCode);	
+		if (accountToFind == null) return null; 
+		return (checkAccessCode(accountToFind, accessCode) == null) ? null : checkAccessCode(accountToFind, accessCode).toString();	
 	}
 	
 	//WTCET-37 - NEW until 73
@@ -70,6 +71,21 @@ public class Admin {
 		
 		//Return early if no account found, otherwise return the results of checking to see if the amount can be deposited
 		return (accountToFind == null) ? null : accountToFind.deposit(amount);
+	}
+	
+	//WTCET-38 - NEW
+	//Method for withdrawing an amount of money from an account
+	public BigDecimal withdrawFromAccount(long accountNumber, long idNumber, int accessCode, double amount) {
+		
+		//Create a new Account object to hold the result of searching for the account that goes with the account number provided
+		Account accountToFind = findAccountByNumber(accountNumber);
+		
+		if (checkAccessCode(accountToFind, accessCode) == null) return null;
+		if (!checkIdNumber(accountToFind, idNumber)) {
+			logger.log(Level.WARNING, "Invalid ID number");
+			return null; 
+		}
+		return accountToFind.withdraw(amount);
 	}
 	
 	//Method for reading data from csv file
@@ -190,10 +206,10 @@ public class Admin {
 	}
 	
 	//Method for checking if access code is valid for the account found
-	private String checkAccessCode(Account accountToFind, int accessCode) {
+	private Account checkAccessCode(Account accountToFind, int accessCode) {
 		
 		//Initialize a String to null
-		String returnData = null;
+		Account returnData = null;
 		
 		//If account number starts with 1, our account will be a savings account
 		if (accountToFind.getAccountNumber() < 20000000000L) {
@@ -201,7 +217,7 @@ public class Admin {
 			
 			//If the access code is valid, assign our string to the data that would be returned by showInfo
 			if (savings.getDepositBox().getAccessCode() == accessCode) {
-				returnData = savings.toString();
+				returnData = savings;
 			} 
 			
 			//If account number starts with 2, our account will be a checking account
@@ -209,7 +225,7 @@ public class Admin {
 			CheckingAccount checking = (CheckingAccount)accountToFind;
 			
 			if (checking.getDebitCard().getAccessCode() == accessCode) {
-				returnData = checking.toString();
+				returnData = checking;
 			}
 		}
 		
@@ -217,6 +233,33 @@ public class Admin {
 		
 		//Return the value of the String - either info on a savings or checking account, or null
 		return returnData;
+	}
+	
+	//WTCET-38 - NEW
+	private boolean checkIdNumber(Account accountToFind, long idNumber) {
+		//Initialize a boolean to false
+		boolean isValid = false;
+				
+			//If account number starts with 1, our account will be a savings account
+			if (accountToFind.getAccountNumber() < 20000000000L) {
+				SavingsAccount savings = (SavingsAccount)accountToFind;
+					
+				//If the access code is valid, set isValid to true
+				if (savings.getDepositBox().getIdNumber() == idNumber) {
+					isValid = true;
+				} 
+					
+				//If account number starts with 2, our account will be a checking account
+			} else {
+				CheckingAccount checking = (CheckingAccount)accountToFind;
+					
+				if (checking.getDebitCard().getIdNumber() == idNumber) {
+					isValid = true;
+				}
+			}
+				
+			//Return the value of the boolean
+			return isValid;
 	}
 	
 	//Necessary getters
