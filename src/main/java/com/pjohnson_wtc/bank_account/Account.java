@@ -34,11 +34,8 @@ public class Account {
 	//Method for depositing money into account
 	public BigDecimal deposit(double amount) {
 		
-		//Return early if deposit amount is less than or equal to zero
-		if (amount <= 0) {
-			logger.log(Level.WARNING, "You must deposit a positive amount");
-			return balance;
-		}
+		//Return early if validation check for amount fails
+		if (!validAmount(amount)) return balance;
 		
 		//Otherwise, set balance to existing value plus deposit amount, truncated to two decimal places, and return
 		setBalance(balance.add(new BigDecimal(Math.floor(amount * 100) / 100)));
@@ -49,8 +46,22 @@ public class Account {
 	
 	//WTCET-38 - NEW
 	public BigDecimal withdraw(double amount) {
+		
+		//Return early if validation check for amount fails
+		if (!validAmount(amount)) return balance;
+		
 		setBalance(balance.subtract(new BigDecimal(amount)));
 		return balance;
+	}
+	
+	boolean validAmount(double amount) {
+		
+		//Return false if deposit amount is less than or equal to zero
+		if (amount <= 0) {
+			logger.log(Level.WARNING, "You must provide a positive amount");
+			return false;
+		}
+		return true;
 	}
 	
 	//Necessary setters
