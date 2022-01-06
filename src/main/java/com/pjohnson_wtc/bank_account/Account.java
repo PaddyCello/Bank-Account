@@ -2,8 +2,12 @@ package com.pjohnson_wtc.bank_account;
 
 import java.math.BigDecimal;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Account {
+	
+	Logger logger = Logger.getLogger("com.pjohnson_wtc.bank_account.account");
 	
 	String name;
 	long socialSecurityNumber;
@@ -27,6 +31,11 @@ public class Account {
 	
 	//WTCET-37 - NEW
 	public BigDecimal deposit(BigDecimal amount) {
+		
+		if (amount.compareTo(new BigDecimal(0)) <= 0) {
+			logger.log(Level.WARNING, "You must deposit a positive amount");
+			return balance;
+		}
 		setBalance(balance.add(amount));
 		return balance;
 	}

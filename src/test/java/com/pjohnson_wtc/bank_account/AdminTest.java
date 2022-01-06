@@ -102,4 +102,10 @@ public class AdminTest {
 		admin.depositIntoAccount(admin.getAccounts().get(0).getAccountNumber(), new BigDecimal(200));
 		assertEquals(new BigDecimal(1200), admin.getAccounts().get(0).getBalance());
 	}
+	@Test
+	public void testDepositIntoAccount_negativeDeposit() {
+		admin.createAccountsFromCsv("NewBankAccounts.csv");
+		admin.depositIntoAccount(admin.getAccounts().get(0).getAccountNumber(), new BigDecimal(-200));
+		assertEquals(new BigDecimal(1000), admin.getAccounts().get(0).getBalance());
+	}
 }
