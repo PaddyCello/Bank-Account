@@ -63,7 +63,7 @@ public class Admin {
 	
 	//WTCET-37 - NEW
 	//Method for depositing an amount of money into an account
-	public BigDecimal depositIntoAccount(long accountNumber, BigDecimal amount) {
+	public BigDecimal depositIntoAccount(long accountNumber, double amount) {
 		
 		Account accountToFind = findAccountByNumber(accountNumber);
 		
