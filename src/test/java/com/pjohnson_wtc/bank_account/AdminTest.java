@@ -128,4 +128,11 @@ public class AdminTest {
 		admin.withdrawFromAccount(sa.getAccountNumber(), sa.getDepositBox().getIdNumber(), sa.getDepositBox().getAccessCode(), -200);
 		assertEquals(new BigDecimal(1000), admin.getAccounts().get(0).getBalance());
 	}
+	@Test
+	public void testWithdrawFromAccount_insufficientFunds() {
+		admin.createAccountsFromCsv("NewBankAccounts.csv");
+		SavingsAccount sa = (SavingsAccount)admin.getAccounts().get(0);
+		admin.withdrawFromAccount(sa.getAccountNumber(), sa.getDepositBox().getIdNumber(), sa.getDepositBox().getAccessCode(), 1200);
+		assertEquals(new BigDecimal(1000), admin.getAccounts().get(0).getBalance());
+	}
 }

@@ -49,6 +49,7 @@ public class Account {
 		
 		//Return early if validation check for amount fails
 		if (!validAmount(amount)) return balance;
+		if (!sufficientFunds(amount)) return balance;
 		
 		setBalance(balance.subtract(new BigDecimal(amount)));
 		return balance;
@@ -59,6 +60,14 @@ public class Account {
 		//Return false if deposit amount is less than or equal to zero
 		if (amount <= 0) {
 			logger.log(Level.WARNING, "You must provide a positive amount");
+			return false;
+		}
+		return true;
+	}
+	
+	boolean sufficientFunds(double amount) {
+		if (balance.compareTo(new BigDecimal(amount)) < 0) {
+			logger.log(Level.WARNING, "Insufficient funds");
 			return false;
 		}
 		return true;
