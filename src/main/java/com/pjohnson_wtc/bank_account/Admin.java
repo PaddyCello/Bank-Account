@@ -50,19 +50,20 @@ public class Admin {
 		return accountNums;
 	}
 	
-	//WTCET-38 - REFACTORED until 63
+	//WTCET-39 - REFACTORED until 65
 	//Method for showing info from a given account number and access code
 	public String showInfo(long accountNumber, int accessCode) {
 		
 		//Create a new Account object to hold the result of searching for the account that goes with the account number provided
 		Account accountToFind = findAccountByNumber(accountNumber);
 		
-		//Return early if no account found, otherwise return the results of checking to see if the access code is valid
-		if (accountToFind == null) return null; 
-		return (checkAccessCode(accountToFind, accessCode) == null) ? null : checkAccessCode(accountToFind, accessCode).toString();	
+		//Return early if no account found or access code invalid
+		if (accountToFind == null || checkAccessCode(accountToFind, accessCode) == null) return null; 
+		
+		//Otherwise return the Account from checkAccessCode() and convert to String
+		return checkAccessCode(accountToFind, accessCode).toString();	
 	}
 	
-	//WTCET-37 - NEW until 73
 	//Method for depositing an amount of money into an account - takes a double instead of a BigDecimal to minimize risk of NumberFormatException
 	public BigDecimal depositIntoAccount(long accountNumber, double amount) {
 		
@@ -73,7 +74,7 @@ public class Admin {
 		return (accountToFind == null) ? null : accountToFind.deposit(amount);
 	}
 	
-	//WTCET-38 - NEW until 94
+	//WTCET-39 - REFACTORED until 92
 	//Method for withdrawing an amount of money from an account
 	public BigDecimal withdrawFromAccount(long accountNumber, long idNumber, int accessCode, double amount) {
 		
@@ -83,35 +84,35 @@ public class Admin {
 		//Return early if no account found
 		if (accountToFind == null) return null;
 		
-		//Return early if access code is not valid
-		if (checkAccessCode(accountToFind, accessCode) == null) return null;
-		
-		//Return early if deposit box number / debit card number is not valid
-		if (!checkIdNumber(accountToFind, idNumber)) {
-			logger.log(Level.WARNING, "Invalid ID number");
-			return null; 
-		}
+		//Return early if access code or ID number is not valid
+		if (checkAccessCode(accountToFind, accessCode) == null || !checkIdNumber(accountToFind, idNumber)) return null;
 		
 		//Otherwise, return outcome of attempt to withdraw funds
 		return accountToFind.withdraw(amount);
 	}
 	
-	//WTCET-39 - NEW
+	//WTCET-39 - NEW until 117
 	//Method for transferring funds between accounts
 	//For the purposes of this project, accounts are only valid if they exist within the application
-	public BigDecimal transferBetweenAccounts(long senderAccountNumber, long destinationAccountNumber, long idNumber, int accessCode, double amount) {
+	public BigDecimal transferBetweenAccounts(long senderAccountNumber, long recipientAccountNumber, long idNumber, int accessCode, double amount) {
 		
+		//Create a new Account object to hold the result of searching for the account that goes with the sender account number provided
 		Account senderAccount = findAccountByNumber(senderAccountNumber);
-		Account destinationAccount = findAccountByNumber(destinationAccountNumber);
 		
-		if (checkAccessCode(senderAccount, accessCode) == null) return null;
+		//Return early if no account found
+		if (senderAccount == null) return null;
 		
-		if (!checkIdNumber(senderAccount, idNumber)) {
-			logger.log(Level.WARNING, "Invalid ID number");
-			return null;
-		}
+		//Do the same for the recipient's account
+		Account recipientAccount = findAccountByNumber(recipientAccountNumber);
+		
+		//Return early if not found, sender's access code is invalid, or sender's ID number is invalid
+		if (recipientAccount == null || checkAccessCode(senderAccount, accessCode) == null || !checkIdNumber(senderAccount, idNumber)) return null;
+		
+		//Otherwise, withdraw from one and deposit into another
 		senderAccount.withdraw(amount);
-		destinationAccount.deposit(amount);
+		recipientAccount.deposit(amount);
+		
+		logger.log(Level.INFO, "Transfer successful");
 		return senderAccount.getBalance();
 	}
 	
@@ -202,8 +203,7 @@ public class Admin {
 		return (applicant.get(2).equals("Savings")) ? new SavingsAccount(name, socialSecurityNumber, balance, "1") : 
 													new CheckingAccount(name, socialSecurityNumber, balance, "2");
 	}
-	
-	//WTCET-36 - NEW until 209
+
 	//Method for finding account with account number provided
 	private Account findAccountByNumber(long accountNumber) {
 		
@@ -231,8 +231,7 @@ public class Admin {
 		//Return result - either an account or null
 		return accountToFind;
 	}
-	
-	//WTCET-38 - REFACTORED until 242
+
 	//Method for checking if access code is valid for the account found
 	private Account checkAccessCode(Account accountToFind, int accessCode) {
 		
@@ -263,7 +262,7 @@ public class Admin {
 		return returnData;
 	}
 	
-	//WTCET-38 - NEW until 271
+	//WTCET-39 - REFACTORED until 294
 	//Method for checking if deposit box number / debit card number is valid
 	private boolean checkIdNumber(Account accountToFind, long idNumber) {
 		
@@ -287,7 +286,9 @@ public class Admin {
 				isValid = true;
 			}
 		}
-				
+		
+		if (!isValid) logger.log(Level.WARNING, "Invalid ID number");
+		
 		//Return the value of the boolean
 		return isValid;
 	}
