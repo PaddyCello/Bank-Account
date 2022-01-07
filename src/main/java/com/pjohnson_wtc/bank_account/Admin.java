@@ -80,6 +80,9 @@ public class Admin {
 		//Create a new Account object to hold the result of searching for the account that goes with the account number provided
 		Account accountToFind = findAccountByNumber(accountNumber);
 		
+		//Return early if no account found
+		if (accountToFind == null) return null;
+		
 		//Return early if access code is not valid
 		if (checkAccessCode(accountToFind, accessCode) == null) return null;
 		
@@ -91,6 +94,25 @@ public class Admin {
 		
 		//Otherwise, return outcome of attempt to withdraw funds
 		return accountToFind.withdraw(amount);
+	}
+	
+	//WTCET-39 - NEW
+	//Method for transferring funds between accounts
+	//For the purposes of this project, accounts are only valid if they exist within the application
+	public BigDecimal transferBetweenAccounts(long senderAccountNumber, long destinationAccountNumber, long idNumber, int accessCode, double amount) {
+		
+		Account senderAccount = findAccountByNumber(senderAccountNumber);
+		Account destinationAccount = findAccountByNumber(destinationAccountNumber);
+		
+		if (checkAccessCode(senderAccount, accessCode) == null) return null;
+		
+		if (!checkIdNumber(senderAccount, idNumber)) {
+			logger.log(Level.WARNING, "Invalid ID number");
+			return null;
+		}
+		senderAccount.withdraw(amount);
+		destinationAccount.deposit(amount);
+		return senderAccount.getBalance();
 	}
 	
 	//Method for reading data from csv file

@@ -142,4 +142,13 @@ public class AdminTest {
 		admin.withdrawFromAccount(sa.getAccountNumber(), sa.getDepositBox().getIdNumber(), sa.getDepositBox().getAccessCode(), 200.005);
 		assertEquals(new BigDecimal(800), admin.getAccounts().get(0).getBalance());
 	}
+	@Test
+	public void testTransferBetweenAccounts( ) {
+		admin.createAccountsFromCsv("NewBankAccounts.csv");
+		SavingsAccount sa = (SavingsAccount)admin.getAccounts().get(0);
+		Account destinationAccount = admin.getAccounts().get(1);
+		admin.transferBetweenAccounts(sa.getAccountNumber(), destinationAccount.getAccountNumber(), sa.getDepositBox().getIdNumber(), sa.getDepositBox().getAccessCode(), 200.005);
+		assertEquals(new BigDecimal(800), admin.getAccounts().get(0).getBalance());
+		assertEquals(new BigDecimal(2700), admin.getAccounts().get(1).getBalance());
+	}
 }
