@@ -80,6 +80,9 @@ public class Admin {
 		//Create a new Account object to hold the result of searching for the account that goes with the account number provided
 		Account accountToFind = findAccountByNumber(accountNumber);
 		
+		//Return early if no account found
+		if (accountToFind == null) return null;
+		
 		//Return early if access code is not valid
 		if (checkAccessCode(accountToFind, accessCode) == null) return null;
 		
