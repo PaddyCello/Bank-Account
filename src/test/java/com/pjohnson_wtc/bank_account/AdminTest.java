@@ -74,4 +74,26 @@ public class AdminTest {
 		CheckingAccount ca = (CheckingAccount)admin.getAccounts().get(1);
 		assertTrue((ca.getDebitCard().getIdNumber() > 99999999999L) && (ca.getDebitCard().getIdNumber() < 1000000000000L));
 	}
+	@Test
+	public void testShowInfo_savings() {
+		admin.createAccountsFromCsv("NewBankAccounts.csv");
+		SavingsAccount sa = (SavingsAccount)admin.getAccounts().get(0);
+		assertEquals("Name: Arielle Duncan, Savings Account Number: " + sa.getAccountNumber() + ", Deposit Box Number: " + sa.getDepositBox().getIdNumber() + ", Balance: 1000", admin.showInfo(sa.getAccountNumber(), sa.getDepositBox().getAccessCode()));
+	}
+	@Test
+	public void testShowInfo_checking() {
+		admin.createAccountsFromCsv("NewBankAccounts.csv");
+		CheckingAccount ca = (CheckingAccount)admin.getAccounts().get(1);
+		assertEquals("Name: Marybeth Sanders, Checking Account Number: " + ca.getAccountNumber() + ", Debit Card Number: " + ca.getDebitCard().getIdNumber() + ", Balance: 2500", admin.showInfo(ca.getAccountNumber(), ca.getDebitCard().getAccessCode()));
+	}
+	@Test
+	public void testShowInfo_wrongAccountNumber() {
+		admin.createAccountsFromCsv("NewBankAccounts.csv");
+		assertNull(admin.showInfo(30025643212L, 123));
+	}
+	@Test
+	public void testShowInfo_wrongAccessCode() {
+		admin.createAccountsFromCsv("NewBankAccounts.csv");
+		assertNull(admin.showInfo(admin.getAccounts().get(0).getAccountNumber(), 123));
+	}
 }
