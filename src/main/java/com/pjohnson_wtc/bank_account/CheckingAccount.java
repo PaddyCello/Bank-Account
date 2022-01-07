@@ -20,8 +20,7 @@ public class CheckingAccount extends Account implements Interest {
 	public BigDecimal generateInterestRate() {
 		return baseInterestRate.multiply(new BigDecimal(0.15));
 	}
-	
-	//WTCET-36 - NEW until 28
+
 	//toString - not inherited from Account as info specific to account type
 		public String toString() {
 			return "Name: " + name + ", Checking Account Number: " + accountNumber + ", Debit Card Number: " + debitCard.getIdNumber() + ", Balance: " + balance;
