@@ -50,7 +50,6 @@ public class Admin {
 		return accountNums;
 	}
 	
-	//WTCET-39 - REFACTORED until 65
 	//Method for showing info from a given account number and access code
 	public String showInfo(long accountNumber, int accessCode) {
 		
@@ -73,8 +72,7 @@ public class Admin {
 		//Return early if no account found, otherwise return the results of checking to see if the amount can be deposited
 		return (accountToFind == null) ? null : accountToFind.deposit(amount);
 	}
-	
-	//WTCET-39 - REFACTORED until 92
+
 	//Method for withdrawing an amount of money from an account
 	public BigDecimal withdrawFromAccount(long accountNumber, long idNumber, int accessCode, double amount) {
 		
@@ -90,8 +88,7 @@ public class Admin {
 		//Otherwise, return outcome of attempt to withdraw funds
 		return accountToFind.withdraw(amount);
 	}
-	
-	//WTCET-39 - NEW until 117
+
 	//Method for transferring funds between accounts
 	//For the purposes of this project, accounts are only valid if they exist within the application
 	public BigDecimal transferBetweenAccounts(long senderAccountNumber, long recipientAccountNumber, long idNumber, int accessCode, double amount) {
@@ -261,8 +258,7 @@ public class Admin {
 		//Return the value of the String - either info on a savings or checking account, or null
 		return returnData;
 	}
-	
-	//WTCET-39 - REFACTORED until 294
+
 	//Method for checking if deposit box number / debit card number is valid
 	private boolean checkIdNumber(Account accountToFind, long idNumber) {
 		
@@ -298,4 +294,22 @@ public class Admin {
 		return accounts;
 	}
 
+	public static void main(String[] args) {
+		
+		Admin admin = new Admin();
+		
+		admin.createAccountsFromCsv("NewBankAccounts.csv");
+		
+		SavingsAccount sa = (SavingsAccount)admin.getAccounts().get(0);
+		
+		System.out.println(admin.showInfo(sa.getAccountNumber(), sa.getDepositBox().getAccessCode()));
+		
+		admin.depositIntoAccount(sa.getAccountNumber(), 200);
+		
+		admin.withdrawFromAccount(sa.getAccountNumber(), sa.getDepositBox().getIdNumber(), sa.getDepositBox().getAccessCode(), 200);
+		
+		admin.transferBetweenAccounts(sa.getAccountNumber(), admin.getAccounts().get(1).getAccountNumber(), sa.getDepositBox().getIdNumber(), sa.getDepositBox().getAccessCode(), 200);
+		
+		System.out.println(admin.showInfo(sa.getAccountNumber(), sa.getDepositBox().getAccessCode()));
+	}
 }

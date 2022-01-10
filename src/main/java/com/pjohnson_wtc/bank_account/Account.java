@@ -84,7 +84,7 @@ public class Account {
 		return true;
 	}
 	
-	//WTCET-39 - REFACTORED until 92. Setter does not need to be public as balance only updated via deposit, withdraw and transfer
+	//Setter does not need to be public as balance only updated via deposit, withdraw and transfer
 	//Necessary setters
 	void setBalance(BigDecimal balance) {
 		this.balance = balance;
