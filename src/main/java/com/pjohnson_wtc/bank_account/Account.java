@@ -1,7 +1,6 @@
 package com.pjohnson_wtc.bank_account;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,8 +28,7 @@ public class Account {
 		int randomBit = new Random().nextInt(999 - 100) + 100;
 		return Long.parseLong(accountType + (socialSecurityNumber % 100) + uniqueAccountNumBit++ + randomBit);
 	}
-	
-	//WTCET-38 - REFACTORED until 45
+
 	//Method for depositing money into account
 	public BigDecimal deposit(double amount) {
 		
@@ -43,8 +41,7 @@ public class Account {
 		logger.log(Level.INFO, "Deposit successful");
 		return balance;
 	}
-	
-	//WTCET-38 - NEW until 88
+
 	//Method for withdrawing money from an account
 	public BigDecimal withdraw(double amount) {
 		
@@ -87,8 +84,9 @@ public class Account {
 		return true;
 	}
 	
+	//WTCET-39 - REFACTORED until 92. Setter does not need to be public as balance only updated via deposit, withdraw and transfer
 	//Necessary setters
-	public void setBalance(BigDecimal balance) {
+	void setBalance(BigDecimal balance) {
 		this.balance = balance;
 	}
 	
