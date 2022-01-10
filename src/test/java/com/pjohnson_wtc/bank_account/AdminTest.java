@@ -96,4 +96,66 @@ public class AdminTest {
 		admin.createAccountsFromCsv("NewBankAccounts.csv");
 		assertNull(admin.showInfo(admin.getAccounts().get(0).getAccountNumber(), 123));
 	}
+	@Test
+	public void testDepositIntoAccount() {
+		admin.createAccountsFromCsv("NewBankAccounts.csv");
+		admin.depositIntoAccount(admin.getAccounts().get(0).getAccountNumber(), 200);
+		assertEquals(new BigDecimal(1200), admin.getAccounts().get(0).getBalance());
+	}
+	@Test
+	public void testDepositIntoAccount_negativeDeposit() {
+		admin.createAccountsFromCsv("NewBankAccounts.csv");
+		admin.depositIntoAccount(admin.getAccounts().get(0).getAccountNumber(), -200);
+		assertEquals(new BigDecimal(1000), admin.getAccounts().get(0).getBalance());
+	}
+	@Test
+	public void testDepositIntoAccount_tooManyDecimalPlaces() {
+		admin.createAccountsFromCsv("NewBankAccounts.csv");
+		admin.depositIntoAccount(admin.getAccounts().get(0).getAccountNumber(), 200.005);
+		assertEquals(new BigDecimal(1200), admin.getAccounts().get(0).getBalance());
+	}
+	@Test
+	public void testWithdrawFromAccount() {
+		admin.createAccountsFromCsv("NewBankAccounts.csv");
+		SavingsAccount sa = (SavingsAccount)admin.getAccounts().get(0);
+		admin.withdrawFromAccount(sa.getAccountNumber(), sa.getDepositBox().getIdNumber(), sa.getDepositBox().getAccessCode(), 200);
+		assertEquals(new BigDecimal(800), admin.getAccounts().get(0).getBalance());
+	}
+	@Test
+	public void testWithdrawFromAccount_negativeWithrawal() {
+		admin.createAccountsFromCsv("NewBankAccounts.csv");
+		SavingsAccount sa = (SavingsAccount)admin.getAccounts().get(0);
+		admin.withdrawFromAccount(sa.getAccountNumber(), sa.getDepositBox().getIdNumber(), sa.getDepositBox().getAccessCode(), -200);
+		assertEquals(new BigDecimal(1000), admin.getAccounts().get(0).getBalance());
+	}
+	@Test
+	public void testWithdrawFromAccount_insufficientFunds() {
+		admin.createAccountsFromCsv("NewBankAccounts.csv");
+		SavingsAccount sa = (SavingsAccount)admin.getAccounts().get(0);
+		admin.withdrawFromAccount(sa.getAccountNumber(), sa.getDepositBox().getIdNumber(), sa.getDepositBox().getAccessCode(), 1200);
+		assertEquals(new BigDecimal(1000), admin.getAccounts().get(0).getBalance());
+	}
+	@Test
+	public void testWithdrawFromAccount_tooManyDecimalPlaces() {
+		admin.createAccountsFromCsv("NewBankAccounts.csv");
+		SavingsAccount sa = (SavingsAccount)admin.getAccounts().get(0);
+		admin.withdrawFromAccount(sa.getAccountNumber(), sa.getDepositBox().getIdNumber(), sa.getDepositBox().getAccessCode(), 200.005);
+		assertEquals(new BigDecimal(800), admin.getAccounts().get(0).getBalance());
+	}
+	@Test
+	public void testTransferBetweenAccounts( ) {
+		admin.createAccountsFromCsv("NewBankAccounts.csv");
+		SavingsAccount sa = (SavingsAccount)admin.getAccounts().get(0);
+		Account recipientAccount = admin.getAccounts().get(1);
+		admin.transferBetweenAccounts(sa.getAccountNumber(), recipientAccount.getAccountNumber(), sa.getDepositBox().getIdNumber(), sa.getDepositBox().getAccessCode(), 200.005);
+		assertEquals(new BigDecimal(800), admin.getAccounts().get(0).getBalance());
+		assertEquals(new BigDecimal(2700), admin.getAccounts().get(1).getBalance());
+	}
+	@Test
+	public void testTransferBetweenAccounts_invalidDestinationAccount() {
+		admin.createAccountsFromCsv("NewBankAccounts.csv");
+		SavingsAccount sa = (SavingsAccount)admin.getAccounts().get(0);
+		admin.transferBetweenAccounts(sa.getAccountNumber(), 30234034502L, sa.getDepositBox().getIdNumber(), sa.getDepositBox().getAccessCode(), 200.005);
+		assertEquals(new BigDecimal(1000), admin.getAccounts().get(0).getBalance());
+	}
 }
